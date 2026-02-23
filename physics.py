@@ -1,7 +1,7 @@
 import utils
 from math import sqrt 
 
-def apply_force(particle, magnitude_x, magnitude_y):
+def apply_force(particle, magnitude_x, magnitude_y): 
     particle.force[0] += magnitude_x
     particle.force[1] += magnitude_y
 
@@ -17,7 +17,7 @@ def apply_drag(particle, k=0.1):
                 -particle.velocity[0]*k, 
                 -particle.velocity[1]*k)
 
-def apply_gravitational_force(particle1, particle2, G, eps=1e-5):
+def apply_gravitational_force(particle1, particle2, G, eps):
     
     dx, dy = utils.compute_deltas(particle1.position ,particle2.position)
     r2 = dx*dx + dy*dy + eps*eps 
