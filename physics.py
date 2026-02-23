@@ -1,11 +1,5 @@
-def compute_deltas(position1, position2):
-    dx = position1[0]-position2[0]
-    dy = position1[1]-position2[1]
-    return dx, dy
-
-def compute_distance(position1, position2):
-    dx, dy = compute_deltas(position1, position2)
-    return ((dx*dx + dy*dy )**0.5)
+import utils
+from math import sqrt 
 
 def apply_force(particle, magnitude_x, magnitude_y):
     particle.force[0] += magnitude_x
@@ -20,14 +14,14 @@ def global_gravity(particle, a_y=-9.80665):
 
 def apply_drag(particle, k=0.1): 
     apply_force(particle, 
-                particle.velocity[0]*k, 
-                particle.velocity[1]*k)
+                -particle.velocity[0]*k, 
+                -particle.velocity[1]*k)
 
 def apply_gravitational_force(particle1, particle2, G = 6.67430e-11, eps=1e-5):
     
-    dx, dy = compute_deltas(particle1.position ,particle2.position)
+    dx, dy = utils.compute_deltas(particle1.position ,particle2.position)
     r2 = dx*dx + dy*dy + eps*eps 
-    inv_r = 1 / (r2 **0.5)
+    inv_r = 1 / sqrt(r2)
     inv_r3 = inv_r / r2 
 
     force_x = -G * particle1.mass * particle2.mass * dx * inv_r3
