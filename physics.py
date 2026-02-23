@@ -17,15 +17,15 @@ def apply_drag(particle, k=0.1):
                 -particle.velocity[0]*k, 
                 -particle.velocity[1]*k)
 
-def apply_gravitational_force(particle1, particle2, G = 6.67430e-11, eps=1e-5):
+def apply_gravitational_force(particle1, particle2, G, eps=1e-5):
     
     dx, dy = utils.compute_deltas(particle1.position ,particle2.position)
     r2 = dx*dx + dy*dy + eps*eps 
     inv_r = 1 / sqrt(r2)
     inv_r3 = inv_r / r2 
 
-    force_x = -G * particle1.mass * particle2.mass * dx * inv_r3
-    force_y = -G * particle1.mass * particle2.mass * dy * inv_r3
+    force_x = G * particle1.mass * particle2.mass * dx * inv_r3
+    force_y = G * particle1.mass * particle2.mass * dy * inv_r3
 
-    apply_force(particle1, force_x, force_y)
+    apply_force(particle1,  force_x,  force_y)
     apply_force(particle2, -force_x, -force_y)

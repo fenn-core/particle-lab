@@ -1,7 +1,8 @@
 class Particle:
-    def __init__(self, position=[0.0, 0.0], velocity=[0.0, 0.0], mass=1.0):
-        self.position = position
-        self.previous_position = position.copy()
-        self.velocity = velocity
+    def __init__(self, name=None, position=None, velocity=None, mass=1.0):
+        self.name = name
+        self.position = position.copy() if position is not None else [0.0, 0.0]
+        self.previous_position = self.position.copy()
+        self.velocity = velocity.copy() if velocity is not None else [0.0, 0.0]
         self.mass = mass
         self.force = [0.0, 0.0]
