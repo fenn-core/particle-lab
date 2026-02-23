@@ -3,7 +3,9 @@ import renderer
 import physics
 
 class World:
-    def __init__(self, integrator, world_gravity=True, particle_gravity=True, G = 6.67430e-11):
+    def __init__(self, integrator, world_gravity=True, 
+                 particle_gravity=True, G = 6.67430e-11
+                 ):
         self.particles = []
         self.constraints = []
         self.constraint_iterations = 10
@@ -33,7 +35,7 @@ class World:
             for i in range(particles_amount-1):
                 for j in range(i+1, particles_amount):
                     physics.apply_gravitational_force(
-                        self.particles[i], self.particles[j], self.G)
+                        self.particles[i], self.particles[j], self.G, eps=1)
                     
         self.integrator.step(self.particles, dt)
 

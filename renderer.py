@@ -5,7 +5,6 @@ class Renderer:
         raise NotImplementedError
     
 class MatPlotLibRenderer(Renderer):
-
     def __init__(self):        
         self.fig, self.ax = plt.subplots()
         self.ax.set_aspect("equal")
