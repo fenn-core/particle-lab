@@ -1,4 +1,5 @@
-from particle import Particle 
+from particle import Particle
+from constraint import Constraint
 import physics
 
 class World:
@@ -15,19 +16,19 @@ class World:
         self.G = G
         self.eps = eps
 
-    def add_particle(self, particle):
+    def add_particle(self, particle:Particle) -> None:
         self.particles.append(particle)
     
-    def remove_particle(self, particle):
+    def remove_particle(self, particle:Particle) -> None:
         self.particles.remove(particle)
 
-    def add_constraint(self, constraint):
+    def add_constraint(self, constraint:Constraint) -> None:
         self.constraints.append(constraint)
 
-    def remove_constraint(self, constraint):
+    def remove_constraint(self, constraint:Constraint) -> None:
         self.constraints.remove(constraint)
 
-    def step(self, dt=0.01):
+    def step(self, dt=0.01) -> None:
         particles_amount = len(self.particles)
         if self.world_gravity:
             for particle in self.particles:
