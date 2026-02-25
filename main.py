@@ -23,5 +23,6 @@ world.add_particle(p3)
 renderer = renderer.MatPlotLibRenderer()
 
 while True:
+
     world.step(dt=0.01)
     renderer.render(world)

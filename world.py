@@ -14,14 +14,14 @@ class World:
         eps=1e-5,
         constraint_iterations=10,
     ) -> None:
-        self.particles = []
-        self.constraints = []
-        self.constraint_iterations = constraint_iterations
-        self.integrator = integrator
-        self.world_gravity = world_gravity
-        self.particle_gravity = particle_gravity
-        self.G = G
-        self.eps = eps
+        self.particles: list[Particle] = []
+        self.constraints: list[Constraint] = []
+        self.constraint_iterations: int = constraint_iterations
+        self.integrator: Integrator = integrator
+        self.world_gravity: bool = world_gravity
+        self.particle_gravity: bool = particle_gravity
+        self.G: float = G
+        self.eps: float = eps
 
     def add_particle(self, particle: Particle) -> None:
         self.particles.append(particle)
@@ -36,7 +36,7 @@ class World:
         self.constraints.remove(constraint)
 
     def apply_forces(self) -> None:
-        particles_amount = len(self.particles)
+        particles_amount: int = len(self.particles)
         if self.world_gravity:
             for particle in self.particles:
                 physics.global_gravity(particle)
@@ -49,7 +49,6 @@ class World:
 
     def step(self, dt=0.01) -> None:
         self.apply_forces()
-
         if self.integrator.multi_step:
             self.integrator.position_step(self.particles, dt)
             for particle in self.particles:
@@ -60,7 +59,7 @@ class World:
             self.integrator.step(self.particles, dt)
 
         for constraint in self.constraints:
-            if not (constraint.applies_forces):
+            if not (constraint.applies_force):
                 for _ in range(self.constraint_iterations):
                     constraint.solve()
         for particle in self.particles:
