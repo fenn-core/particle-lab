@@ -3,13 +3,14 @@ from math import sqrt
 from particle import Particle
 
 def apply_force(particle:Particle, magnitude_x:float,
-                magnitude_y:float) -> None: 
+                magnitude_y:float) -> None:
     particle.force[0] += magnitude_x
     particle.force[1] += magnitude_y
 
 def global_gravity(particle:Particle, a_y=-9.80665) -> None:
-    force = a_y * particle.mass
-    apply_force(particle, 0, force)
+    if particle.mass != 0:
+        force = a_y * particle.mass
+        apply_force(particle, 0, force)
 
 # class Drag:
 # drag class will replace the function soon

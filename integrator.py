@@ -51,6 +51,8 @@ class VelocityVerletIntegrator(Integrator):
         self.updates_velocity = True
     def position_step(self, particles:list, dt:float) -> None:
         for particle in particles:
+            if particle.mass == 0:
+                continue
             a_x = particle.force[0] / particle.mass
             a_y = particle.force[1] / particle.mass
             particle.previous_acceleration = [a_x, a_y]
@@ -62,6 +64,8 @@ class VelocityVerletIntegrator(Integrator):
                                         0.5*a_y*dt*dt)
     def velocity_step(self, particles:list, dt:float) -> None:
         for particle in particles:
+            if particle.mass == 0:
+                continue
             if particle.previous_acceleration is None:
                 particle.previous_acceleration = [0.0, 0.0]
             a_x1, a_y1 = particle.previous_acceleration
