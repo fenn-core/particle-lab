@@ -17,7 +17,7 @@ class EulerIntegrator(Integrator):
             particle.position[1] += particle.velocity[1] * dt
 
 class VerletIntegrator(Integrator):
-    def step(self, particles, dt, d=0.001):
+    def step(self, particles:list, dt:float, d=0.001) -> None:
         for particle in particles:
             if particle.mass == 0:
                 continue
