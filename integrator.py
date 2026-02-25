@@ -1,10 +1,10 @@
 class Integrator:
-    def step(self, particles, dt):
+    def step(self, particles:list, dt:float):
         raise NotImplementedError
 
 
 class EulerIntegrator(Integrator):
-    def step(self, particles, dt):
+    def step(self, particles:list, dt:float) -> None:
         for particle in particles:
             if particle.mass == 0:
                 continue

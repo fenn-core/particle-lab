@@ -1,17 +1,20 @@
 import utils
+from particle import Particle
 
 class Constraint:
     def solve(self):
         raise NotImplementedError
 
 class Rod(Constraint):
-    def __init__(self, length, anchor1, anchor2, stiffness=1.0):
+    def __init__(self, length:float,
+                 anchor1:Particle, anchor2:Particle,
+                 stiffness=1.0):
         self.anchor1 = anchor1 
         self.anchor2 = anchor2
         self.length = length
         self.stiffness = stiffness
-        
-    def compute_constraint(self): # implementation is positional for now, velocity based correction is planned 
+    # implementation is positional for now, velocity based correction is planned 
+    def compute_constraint(self): 
         distance = utils.compute_distance(self.anchor1.position, self.anchor2.position)
         if distance == 0:
             return 0, 0, 0, 0
@@ -32,7 +35,7 @@ class Rod(Constraint):
         direction_y * error * (w2/w_sum)
         )
     
-    def solve(self):
+    def solve(self) -> None:
         p1_x_cor, p1_y_cor, p2_x_cor, p2_y_cor = self.compute_constraint()
         self.anchor1.position[0] += p1_x_cor
         self.anchor1.position[1] += p1_y_cor
