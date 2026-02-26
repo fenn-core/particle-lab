@@ -1,6 +1,6 @@
 class Integrator:
     multi_step: bool = False
-    updates_velocity: bool = False
+    computes_velocity: bool = False
 
     def step(self, particles: list, dt: float) -> None:
         raise NotImplementedError
@@ -15,7 +15,7 @@ class Integrator:
 class EulerIntegrator(Integrator):
     def __init__(self) -> None:
         self.multi_step: bool = False
-        self.updates_velocity: bool = False
+        self.computes_velocity: bool = True
 
     def step(self, particles: list, dt: float) -> None:
         for particle in particles:
@@ -33,7 +33,7 @@ class EulerIntegrator(Integrator):
 class VerletIntegrator(Integrator):
     def __init__(self) -> None:
         self.multi_step = False
-        self.updates_velocity: bool = False
+        self.computes_velocity: bool = False
 
     def step(self, particles: list, dt: float, d=0.001) -> None:
         for particle in particles:
@@ -64,7 +64,7 @@ class VerletIntegrator(Integrator):
 class VelocityVerletIntegrator(Integrator):
     def __init__(self) -> None:
         self.multi_step: bool = True
-        self.updates_velocity: bool = True
+        self.computes_velocity: bool = True
 
     def position_step(self, particles: list, dt: float) -> None:
         for particle in particles:

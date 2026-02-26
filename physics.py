@@ -10,7 +10,7 @@ def apply_force(particle: Particle, magnitude_x: float, magnitude_y: float) -> N
 
 def global_gravity(particle: Particle, a_y=-9.80665) -> None:
     if particle.mass != 0:
-        force = a_y * particle.mass
+        force: float = a_y * particle.mass
         apply_force(particle, 0, force)
 
 
@@ -27,6 +27,7 @@ def apply_gravitational_force(
 ) -> None:
 
     dx: float
+    dy: float
     r2: float
     inv_r: float
     inv_r3: float

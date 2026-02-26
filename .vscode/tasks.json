@@ -5,6 +5,11 @@
       "label": "quality",
       "type": "shell",
       "command": "ruff check . --fix && black . && mypy .",
+      "options": {
+    "shell": {
+      "executable": "C:\\Program Files\\Git\\bin\\bash.exe"
+      }
+      },
       "presentation": {
         "reveal": "always",
         "panel": "dedicated",
