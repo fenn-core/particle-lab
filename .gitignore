@@ -1,0 +1,10 @@
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.vscode/
+tasks.json
+*.pyc
+.env
+venv/
+build/
+dist/

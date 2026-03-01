@@ -54,10 +54,8 @@ class Rod(Constraint):
         p2_x_cor: float
         p2_y_cor: float
         p1_x_cor, p1_y_cor, p2_x_cor, p2_y_cor = self.compute_constraint()
-        self.anchor1.position[0] += p1_x_cor
-        self.anchor1.position[1] += p1_y_cor
-        self.anchor2.position[0] -= p2_x_cor
-        self.anchor2.position[1] -= p2_y_cor
+        self.anchor1.position += (p1_x_cor, p1_y_cor)
+        self.anchor2.position += (p2_x_cor, p1_y_cor)
 
 
 class Spring(Constraint):
@@ -80,8 +78,8 @@ class Spring(Constraint):
         distance: float = utils.compute_distance(
             self.anchor1.position, self.anchor2.position
         )
-        if distance == 0:
-            return 0, 0
+        if distance < 1e-8:
+            return 0.0, 0.0
         dx: float
         dy: float
         dx, dy = utils.compute_deltas(self.anchor1.position, self.anchor2.position)

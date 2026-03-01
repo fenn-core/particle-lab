@@ -1,3 +1,7 @@
+from numpy.typing import NDArray
+from numpy import zeros
+
+
 class Integrator:
     multi_step: bool = False
     computes_velocity: bool = False
@@ -21,13 +25,10 @@ class EulerIntegrator(Integrator):
         for particle in particles:
             if particle.mass == 0:
                 continue
-            a_x: float = particle.force[0] / particle.mass
-            a_y: float = particle.force[1] / particle.mass
-            particle.velocity[0] += a_x * dt
-            particle.velocity[1] += a_y * dt
+            acceleration: NDArray = particle.force / particle.mass
+            particle.velocity += acceleration * dt
             particle.previous_position = particle.position.copy()
-            particle.position[0] += particle.velocity[0] * dt
-            particle.position[1] += particle.velocity[1] * dt
+            particle.position += particle.velocity * dt
 
 
 class VerletIntegrator(Integrator):
@@ -39,24 +40,15 @@ class VerletIntegrator(Integrator):
         for particle in particles:
             if particle.mass == 0:
                 continue
-            a_x: float = particle.force[0] / particle.mass
-            a_y: float = particle.force[1] / particle.mass
+            acceleration: NDArray = particle.force / particle.mass
             if particle.previous_position is None:
-                particle.previous_position = [
-                    (particle.position[0] - particle.velocity[0] * dt),
-                    (particle.position[1] - particle.velocity[1] * dt),
-                ]
-
-            temp: list = particle.position.copy()
-            particle.position[0] = (
-                particle.position[0]
-                + (particle.position[0] - particle.previous_position[0]) * (1 - d)
-                + a_x * dt * dt
-            )
-            particle.position[1] = (
-                particle.position[1]
-                + (particle.position[1] - particle.previous_position[1]) * (1 - d)
-                + a_y * dt * dt
+                particle.previous_position = (particle.position - particle.velocity * dt)
+                
+            temp: NDArray = particle.position.copy()
+            particle.position = (
+                particle.position
+                + (particle.position - particle.previous_position) * (1 - d)
+                + acceleration * dt * dt
             )
             particle.previous_position = temp
 
@@ -70,26 +62,17 @@ class VelocityVerletIntegrator(Integrator):
         for particle in particles:
             if particle.mass == 0:
                 continue
-            a_x: float = particle.force[0] / particle.mass
-            a_y: float = particle.force[1] / particle.mass
-            particle.previous_acceleration = [a_x, a_y]
-            particle.position[0] = (
-                particle.position[0] + particle.velocity[0] * dt + 0.5 * a_x * dt * dt
+            acceleration: NDArray = particle.force / particle.mass
+            particle.previous_acceleration = acceleration.copy()
+            particle.position = (
+                particle.position + particle.velocity * dt + 0.5 * acceleration * dt * dt
             )
-            particle.position[1] = (
-                particle.position[1] + particle.velocity[1] * dt + 0.5 * a_y * dt * dt
-            )
-
+            
     def velocity_step(self, particles: list, dt: float) -> None:
         for particle in particles:
             if particle.mass == 0:
                 continue
             if particle.previous_acceleration is None:
-                particle.previous_acceleration = [0.0, 0.0]
-            a_x1: float
-            a_y1: float
-            a_x1, a_y1 = particle.previous_acceleration
-            a_x: float = particle.force[0] / particle.mass
-            a_y: float = particle.force[1] / particle.mass
-            particle.velocity[0] = particle.velocity[0] + 0.5 * (a_x + a_x1) * dt
-            particle.velocity[1] = particle.velocity[1] + 0.5 * (a_y + a_y1) * dt
+                particle.previous_acceleration = zeros(2, dtype="float64")
+            acceleration: NDArray = particle.force / particle.mass
+            particle.velocity = particle.velocity + 0.5 * (acceleration + particle.previous_acceleration) * dt

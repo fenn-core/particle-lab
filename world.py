@@ -1,3 +1,4 @@
+import numpy as np
 from particle import Particle
 from constraint import Constraint
 import physics
@@ -58,23 +59,20 @@ class World:
 
     def reset_forces(self) -> None:
         for particle in self.particles:
-            particle.force = [0.0, 0.0]
+            particle.force = np.zeros(2, dtype="float64")
 
     def recompute_velocity(self, dt) -> None:
         for particle in self.particles:
-            if particle.mass:   
-                particle.velocity[0] = (
-                    particle.position[0] - particle.previous_position[0]
+            if particle.mass:
+                particle.velocity = (
+                    particle.position - particle.previous_position
                 ) / dt
-                particle.velocity[1] = (
-                    particle.position[1] - particle.previous_position[1]
-                ) / dt
-    
+
     def solve_pbd_constraints(self) -> None:
         for _ in range(self.constraint_iterations):
             for constraint in self.pbd_constraints:
                 constraint.solve()
-        
+
     def step(self, dt=0.01) -> None:
         self.reset_forces()
         self.apply_forces()
@@ -86,7 +84,7 @@ class World:
             self.solve_pbd_constraints()
             if self.pbd_constraints:
                 self.recompute_velocity(dt)
-            elif not(self.integrator.computes_velocity):    
+            elif not (self.integrator.computes_velocity):
                 self.recompute_velocity(dt)
 
         else:
@@ -94,6 +92,5 @@ class World:
             self.solve_pbd_constraints()
             if self.pbd_constraints:
                 self.recompute_velocity(dt)
-            elif not(self.integrator.computes_velocity):    
+            elif not (self.integrator.computes_velocity):
                 self.recompute_velocity(dt)
-                

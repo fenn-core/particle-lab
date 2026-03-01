@@ -19,7 +19,7 @@ class MatPlotLibRenderer(Renderer):
         for particle in world.particles:
             self.ax.scatter(particle.position[0], particle.position[1])
 
-        for constraint in (world.pbd_constraints+world.force_constraints):
+        for constraint in world.pbd_constraints + world.force_constraints:
             x1: float
             y1: float
             x2: float
