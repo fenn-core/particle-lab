@@ -2,8 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 class Particle:
-    def __init__(self, name="", position=None, velocity=None, mass=1.0) -> None:
-        self.name: str = name
+    def __init__(self, position=None, velocity=None, mass=1.0, log_data=False) -> None:
         self.position: NDArray[np.float64] = (
             np.array(position, dtype="float64") if position is not None else np.zeros(2, dtype="float64")
         )
@@ -14,3 +13,4 @@ class Particle:
         )
         self.mass: float = mass
         self.force: NDArray[np.float64] = np.zeros(2, dtype="float64")
+        self.log_data: bool = log_data

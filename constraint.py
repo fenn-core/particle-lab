@@ -55,7 +55,7 @@ class Rod(Constraint):
         p2_y_cor: float
         p1_x_cor, p1_y_cor, p2_x_cor, p2_y_cor = self.compute_constraint()
         self.anchor1.position += (p1_x_cor, p1_y_cor)
-        self.anchor2.position += (p2_x_cor, p1_y_cor)
+        self.anchor2.position += (p2_x_cor, p2_y_cor)
 
 
 class Spring(Constraint):

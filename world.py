@@ -3,12 +3,16 @@ from particle import Particle
 from constraint import Constraint
 import physics
 from integrator import Integrator
+from time import time
 
 
 class World:
     def __init__(
         self,
         integrator: Integrator,
+        dt=0.001,
+        sim_time=100,
+        FPS=60,
         world_gravity=True,
         particle_gravity=True,
         G=6.67430e-11,
@@ -20,6 +24,9 @@ class World:
         self.pbd_constraints: list[Constraint] = []
         self.constraint_iterations: int = constraint_iterations
         self.integrator: Integrator = integrator
+        self.dt: float = dt
+        self.sim_time: float = sim_time
+        self.FPS: int = FPS
         self.world_gravity: bool = world_gravity
         self.particle_gravity: bool = particle_gravity
         self.G: float = G
@@ -73,7 +80,7 @@ class World:
             for constraint in self.pbd_constraints:
                 constraint.solve()
 
-    def step(self, dt=0.01) -> None:
+    def step(self, dt) -> None:
         self.reset_forces()
         self.apply_forces()
         if self.integrator.multi_step:
@@ -94,3 +101,29 @@ class World:
                 self.recompute_velocity(dt)
             elif not (self.integrator.computes_velocity):
                 self.recompute_velocity(dt)
+
+
+    def sim_loop(self, render_engine) -> None:
+        dt: float = self.dt
+        FPS: int = self.FPS
+        sim_time: float = self.sim_time 
+        elapsed_time: float = 0
+        last_time: float = time()
+        frame_time: float = 0
+        dt_per_frame: float = 1/FPS
+
+        while elapsed_time < sim_time:
+            current_time: float = time()
+            real_dt: float = current_time - last_time
+            last_time = current_time
+
+            steps = int(real_dt / dt)
+            for _ in range(steps):
+                self.step(dt)
+                elapsed_time += dt
+                frame_time += dt
+
+            if frame_time >= dt_per_frame:
+                render_engine.render(self)
+                # logger.take_snapshot(world.particles)
+                frame_time -= dt_per_frame
