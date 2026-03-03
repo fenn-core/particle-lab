@@ -26,6 +26,7 @@ class World:
         self.integrator: Integrator = integrator
         self.dt: float = dt
         self.sim_time: float = sim_time
+        self.accumulator: float = 0.0
         self.FPS: int = FPS
         self.world_gravity: bool = world_gravity
         self.particle_gravity: bool = particle_gravity
@@ -116,14 +117,16 @@ class World:
             current_time: float = time()
             real_dt: float = current_time - last_time
             last_time = current_time
+            self.accumulator += real_dt
 
-            steps = int(real_dt / dt)
-            for _ in range(steps):
+            while self.accumulator >= dt:
                 self.step(dt)
+                self.accumulator -= dt 
+                alpha: float = self.accumulator / dt
                 elapsed_time += dt
                 frame_time += dt
 
             if frame_time >= dt_per_frame:
-                render_engine.render(self)
+                render_engine.render(self, alpha)
                 # logger.take_snapshot(world.particles)
                 frame_time -= dt_per_frame

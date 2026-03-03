@@ -64,6 +64,7 @@ class VelocityVerletIntegrator(Integrator):
                 continue
             acceleration: NDArray = particle.force / particle.mass
             particle.previous_acceleration = acceleration.copy()
+            particle.previous_position = particle.position.copy()
             particle.position = (
                 particle.position + particle.velocity * dt + 0.5 * acceleration * dt * dt
             )
