@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from particle import Particle
 from utils import lerp
+import numpy as np
+from numpy.typing import NDArray
 
 class Renderer:
     def render(self, world, alpha) -> None:
@@ -13,24 +14,40 @@ class MatPlotLibRenderer(Renderer):
         self.ax.set_aspect("equal")
         self.xlim: tuple[float, float] = xlim
         self.ylim: tuple[float, float] = ylim
-        plt.ion()
-
-    def render(self, world, alpha) -> None:
-        self.ax.clear()
         self.ax.set_xlim(self.xlim[0], self.xlim[1])
         self.ax.set_ylim(self.ylim[0], self.ylim[1])
-        for particle in world.particles:
-            render_x, render_y  = lerp(particle.previous_position,
-                                               particle.position,
-                                               alpha)
-            self.ax.scatter(render_x, render_y)
+        self.particle_scatter = self.ax.scatter([], [])
+        self.constraint_lines: list = []
+        plt.ion()
 
-        for constraint in world.pbd_constraints + world.force_constraints:
-            p1: Particle = constraint.anchor1
-            p2: Particle = constraint.anchor2
-            x1, y1 = lerp(p1.previous_position, p1.position, alpha)
-            x2, y2 = lerp(p2.previous_position, p2.position, alpha)
-            self.ax.plot([x1, x2], [y1, y2])
+    def sync_world(self, world) -> None:
+        for line in self.constraint_lines:
+            line.remove()
+        self.all_constraints: list = (world.pbd_constraints 
+                                    + world.force_constraints)
+        self.constraint_lines = [
+        self.ax.plot([], [])[0]
+        for _ in world.pbd_constraints + world.force_constraints
+        ]
 
-        plt.draw()
-        plt.pause(0.001)
+    def render(self, world, alpha) -> None:
+        if world.topology_changed:
+            self.sync_world(world)
+            world.topology_changed = False
+            
+        positions: NDArray = np.array([
+            lerp(p.previous_position, p.position, alpha) 
+            for p in world.particles 
+        ])
+        self.particle_scatter.set_offsets(positions)
+        for line, constraint in zip(self.constraint_lines, self.all_constraints):
+            x1, y1 = lerp(constraint.anchor1.previous_position,
+                                    constraint.anchor1.position,
+                                    alpha)
+            x2, y2 = lerp(constraint.anchor2.previous_position,
+                                    constraint.anchor2.position,
+                                    alpha)
+            line.set_data([x1, x2], [y1, y2])
+        self.fig.canvas.draw_idle()
+        self.fig.canvas.flush_events()
+        plt.show()

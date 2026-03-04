@@ -3,7 +3,7 @@ import particle_lab as sim
 world = sim.World(
     integrator=sim.VelocityVerletIntegrator(),
     dt=0.001,
-    sim_time=20,
+    # sim_time=20,
     FPS=60,
     world_gravity=True,
     particle_gravity=False,

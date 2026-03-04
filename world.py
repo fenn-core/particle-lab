@@ -28,6 +28,7 @@ class World:
         self.sim_time: float = sim_time
         self.accumulator: float = 0.0
         self.FPS: int = FPS
+        self.topology_changed: bool = True
         self.world_gravity: bool = world_gravity
         self.particle_gravity: bool = particle_gravity
         self.G: float = G
@@ -44,12 +45,14 @@ class World:
             self.force_constraints.append(constraint)
         else:
             self.pbd_constraints.append(constraint)
+        self.topology_changed = True
 
     def remove_constraint(self, constraint: Constraint) -> None:
         if constraint.applies_force:
             self.force_constraints.remove(constraint)
         else:
             self.pbd_constraints.remove(constraint)
+        self.topology_changed = True
 
     def apply_forces(self) -> None:
         particles_amount: int = len(self.particles)
@@ -112,6 +115,7 @@ class World:
         last_time: float = time()
         frame_time: float = 0
         dt_per_frame: float = 1/FPS
+        alpha = 0
 
         while elapsed_time < sim_time:
             current_time: float = time()
