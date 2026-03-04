@@ -12,3 +12,6 @@ tempCodeRunnerFile.py
 tempCodeRunnerFile.python
 Untitled1.py
 settings.json
+*.egg-info/
+dist/
+build/

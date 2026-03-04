@@ -1,4 +1,4 @@
-from particle import Particle
+from particle_lab.physics.particle import Particle
 import numpy as np
 from numpy.typing import NDArray
 

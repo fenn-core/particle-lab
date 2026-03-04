@@ -1,8 +1,8 @@
 import numpy as np
-from particle import Particle
-from constraint import Constraint
-import physics
-from integrator import Integrator
+from particle_lab.physics.particle import Particle
+from particle_lab.physics.constraint import Constraint
+from particle_lab.physics import physics as physics
+from particle_lab.physics.integrator import Integrator
 from time import time
 
 

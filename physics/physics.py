@@ -1,6 +1,6 @@
-import utils
+from particle_lab.utils import utils
 from math import sqrt
-from particle import Particle
+from particle_lab.physics.particle import Particle
 
 
 def apply_force(particle: Particle, magnitude_x: float, magnitude_y: float) -> None:

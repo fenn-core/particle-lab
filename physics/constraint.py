@@ -1,8 +1,8 @@
 from typing import Literal
 
-import utils
-import physics
-from particle import Particle
+import particle_lab.utils as utils 
+from particle_lab.physics import physics
+from particle_lab.physics.particle import Particle
 
 
 class Constraint:

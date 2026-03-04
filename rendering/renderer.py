@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from utils import lerp
+from particle_lab.utils.utils import lerp
 import numpy as np
 from numpy.typing import NDArray
 
