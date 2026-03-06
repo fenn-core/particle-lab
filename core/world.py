@@ -89,23 +89,17 @@ class World:
         self.apply_forces()
         if self.integrator.multi_step:
             self.integrator.position_step(self.particles, dt)
+        else:
+            self.integrator.step(self.particles, dt)
+        if self.pbd_constraints:
+            self.solve_pbd_constraints()
+            self.recompute_velocity(dt)
+        elif not(self.integrator.computes_velocity):
+            self.recompute_velocity(dt)
+        if self.integrator.multi_step:
             self.reset_forces()
             self.apply_forces()
             self.integrator.velocity_step(self.particles, dt)
-            self.solve_pbd_constraints()
-            if self.pbd_constraints:
-                self.recompute_velocity(dt)
-            elif not (self.integrator.computes_velocity):
-                self.recompute_velocity(dt)
-
-        else:
-            self.integrator.step(self.particles, dt)
-            self.solve_pbd_constraints()
-            if self.pbd_constraints:
-                self.recompute_velocity(dt)
-            elif not (self.integrator.computes_velocity):
-                self.recompute_velocity(dt)
-
 
     def sim_loop(self, render_engine) -> None:
         dt: float = self.dt

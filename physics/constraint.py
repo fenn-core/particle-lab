@@ -27,7 +27,7 @@ class Rod(Constraint):
         distance: float = utils.compute_distance(
             self.anchor1.position, self.anchor2.position
         )
-        if distance == 0:
+        if distance < 1e-12:
             return 0, 0, 0, 0
         error: float = (distance - self.length) * self.stiffness
         dx: float
@@ -40,12 +40,12 @@ class Rod(Constraint):
         w_sum: float | int = w1 + w2
         if w_sum == 0:
             return 0, 0, 0, 0
-
+        
         return (
             direction_x * error * (w1 / w_sum),
             direction_y * error * (w1 / w_sum),
-            direction_x * error * (w2 / w_sum),
-            direction_y * error * (w2 / w_sum),
+           -direction_x * error * (w2 / w_sum),
+           -direction_y * error * (w2 / w_sum),
         )
 
     def solve(self) -> None:
