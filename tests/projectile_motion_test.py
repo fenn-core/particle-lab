@@ -13,7 +13,7 @@ world = sim.World(
 )
 
 p1 = sim.Particle(position=[-125, 0])
-p1.velocity = np.array([35,35], dtype="int64")
+p1.velocity = np.array([35, 35], dtype="int64")
 
 world.add_particle(p1)
 
