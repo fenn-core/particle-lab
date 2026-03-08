@@ -7,7 +7,7 @@ world = sim.World(
     FPS=60,
     world_gravity=True  ,
     particle_gravity=False,
-    # G=1
+    # G=1,
     eps=0.5,
 )
 p1 = sim.Particle(position=[0, 8], mass=0)

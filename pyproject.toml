@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "particle-lab"
+name = "particle_lab"
 version = "0.0.1"
 description = "physics based particle simulator"
 authors = [{name = "fenn-core"}]
