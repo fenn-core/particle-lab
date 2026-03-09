@@ -8,7 +8,7 @@ world = sim.World(
     world_gravity=True  ,
     particle_gravity=False,
     # G=1,
-    eps=0.5,
+    eps=0.0001,
 )
 p1 = sim.Particle(position=[0, 8], mass=0)
 p2 = sim.Particle(position=[3, 5], mass=40)
