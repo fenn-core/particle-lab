@@ -2,37 +2,42 @@
 
 Physics-based particle simulation framework currently in the prototyping stage.
 
-The long-term goal of this project is to develop a high-performance physics
-simulation engine with a C++/CUDA backend,\
-while Python is used forprototyping and experimentation.
+![Python](https://img.shields.io/badge/python-3.10+-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-prototype-orange)
+
+
+
+The long-term goal of this project is to develop a high-performance research-oriented physics simulation engine \
+with a C++/CUDA backend, while Python is used for prototyping and experimentation.
 
 ## Current Release
  **v0.0.1 - Prototype** \
  The current version focuses on validating architecture and core simulation
  components before transitioning to a high-performance backend.
  
- ## FEATURES
+ ## Features
   - Modular structure
   - Multiple numerical integrators 
     - Euler
     - Verlet
     - Velocity Verlet
-  - Elementary rendering with MatPlotLib
-  - AoS based physical particle implementation simulating:
+  - Basic visualization using Matplotlib
+  - AoS based particle model supporting:
     - mass
     - gravity
     - drag 
   - Modular constraint system
-  - PBD Rod constraints with:
+  - Position-Based Dynamics (PBD) Rod constraints with:
     - adjustable length
     - stiffness
-  - FBD Spring constraints with:
+  - Force-Based Dynamics (FBD) Spring constraints with:
     - custom length
     - spring constant
     - damping 
 
-# Users Guide 
-## Installation
+## User Guide 
+### Installation
 
 Clone the repository and install the package in editable mode:
 
@@ -48,7 +53,8 @@ import particle_lab
 ```
 
 
-## Quick Example
+### Quick Example
+- Following example produces a simple pendulum simulation   
 
 ```python
 import particle_lab as sim
@@ -75,11 +81,11 @@ world.sim_loop(renderer)
 
 
 
- ## Supported Functions 
-  ### Creating World
+ ### Supported Functions 
+  #### Creating World
   ```python
     world = particle_lab.World(
-        integrator=particle_lab.VelocityVerletIntegrator()
+        integrator=particle_lab.VelocityVerletIntegrator(),
         dt=0.001,
         sim_time=100,
         FPS=60,
@@ -91,42 +97,92 @@ world.sim_loop(renderer)
     )
   ```
    - The user provides a numerical integrator object as the integrator parameter, as there is no default for this value
-   - dt is the phyics simulation timestep value in seconds, default value is 0.001
+   - dt is the simulation timestep value in seconds, default value is 0.001
    - sim_time parameter is the total requested simulation time in seconds, default value is 100
    - FPS is the frames per second of the rendered output, default value is 60
    - world_gravity enables Earth gravity for all particles, True as default 
    - particle_gravity enables pairwise gravity for all particles, currently with no exclusion, True as default
    - G is the Gravitation Constant value, its defaulted to the real life value although, its recommended for simulations to run at \
-    higher values with modified masses for numerical stablity
-   - eps parameter is used for numerical stability, to prevent division by 0, using lower vales might lead to numerical instability
-   - constraint_iterations parameter determines the amount of iterations of each constraint per frame, using lower values might lead to Rod constraints acting floppy 
-  ### Defining Particles 
+    higher values with modified masses for numerical stability
+   - eps parameter is used to prevent division by 0, using lower values might lead to numerical instability
+   - constraint_iterations parameter determines the amount of iterations of each constraint per frame, using lower values might lead to Rod constraints appearing floppy 
+  #### Defining Particles 
    ```python
      particle = particle_lab.Particle(position=[1,2], mass=10)
    ```
-   - Position argument is provided as an ordered list of [x, y], the default value is [0.0, 0.0]
+   - Position argument is provided as a list [x, y], the default value is [0.0, 0.0]
    - Mass argument is a float value representing the particles mass in kilograms, the default value is 1.0 
-   - In order for a particle to be simulated, it should be added to word via:
+   - In order for a particle to be simulated, it must be added to world via:
    ```python
       world.add_particle(particle)
    ```
 
- ### Defining Constraints
+  #### Defining Constraints
   - Rod Constraints
     ```python
-      constraint = particle_lab.Rod(5, particle1, particle2)
+      rod = particle_lab.Rod(5.0, particle1, particle2)
     ```
    - First argument is the rod length in meters, the user must provide a float value as there is no default
-   - Second and third arguments are particle objects that the constraint anchors to
-   - For constraints to be simulated, they have to be included in World via:
-     ```python
-        world.add_constraint(constraint)
-     ```
+   - Second and third arguments are Particle objects that the Rod anchors on
+  - Spring Constraints 
+    ```python
+      spring = particle_lab.Spring(7.0, particle1, particle2, 1000, damping_constant=2)
+    ```
+     - First argument is the spring length in meters, the user must provide a float value as there is no default
+     - Second and third arguments are Particle objects that the Spring anchors on
+     - Fourth argument is the spring constant in N/m   
+     - damping_constant argument is the velocity proportional damping coefficient
+
+  - For constraints to be simulated, they have to be included in World via:
+    ```python
+      world.add_constraint(constraint)
+    ```
+
+ ### Rendering
+  - Matplotlib Renderer
+    ```python 
+     renderer = particle_lab.MatPlotLibRenderer(xlim=(-12,6), ylim=(0,7))
+    ```
+   - Renderer object takes xlim and ylim tuples as window size arguments the default value for both is (-10, 10)
+   ```python 
+      world.sim_loop(renderer)
+   ```
+  - For rendering, the renderer object is passed on to World's sim_loop method
+
+
+## Architecture
+
+The engine is organized into modular subsystems:
+
+- core – simulation world and loop
+- physics – integrators, forces, constraints
+- rendering – visualization backends
+- tools – logging and utilities
+- utils – mathematical helpers
+
 
 ## Roadmap 
+  ### Short Term Goals
+  - Support both:
+    - Real-time simulation with live rendering
+    - Offline simulation followed by playback
 
+  - Refactor simulation state to SoA layout
+  - Implement an extensive data logging and replay system with CSV exports 
 
+  ### Mid Term Goals 
+  - Implement Collisions system
+  - Introduce additional integrators; RK, symplectic, adaptive etc
+  - Implement Advanced Mach number-aware drag system 
+  - Implement Rigid Body system 
+  - Introduce advanced diagnostics and debugging tools
+  - Implement better renderers; Pygame, OpenGL
+  - Introduce a offline frame exporting system 
 
+  ### Long Term Goals 
+  - Implement advanced plotting and visualisation tools for research uses 
+  - Begin development of the  C++ backend
+  - Implement CUDA acceleration for massive simulations
 
 ## Contributing
 
