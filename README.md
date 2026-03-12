@@ -8,7 +8,7 @@ Physics-based particle simulation framework currently in the prototyping stage.
 
 
 
-The long-term goal of this project is to develop a high-performance research-oriented physics simulation engine \
+The long-term goal of this project is to develop a high-performance research-oriented physics simulation engine 
 with a C++/CUDA backend, while Python is used for prototyping and experimentation.
 
 ## Current Release
