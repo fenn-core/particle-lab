@@ -2,7 +2,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 class Particle:
-    def __init__(self, position=None, velocity=None, mass=1.0, log_data=False) -> None:
+    def __init__(self, particle_id=None, position=None, velocity=None, mass=1.0, log_data=False) -> None:
+        self.particle_id: None | int = particle_id
         self.position: NDArray[np.float64] = (
             np.array(position, dtype="float64") if position is not None else np.zeros(2, dtype="float64")
         )

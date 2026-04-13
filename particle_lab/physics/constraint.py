@@ -7,6 +7,9 @@ from particle_lab.physics.particle import Particle
 
 class Constraint:
     applies_force: bool
+    constraint_type: str 
+    anchor1: Particle
+    anchor2: Particle
 
     def solve(self) -> None:
         raise NotImplementedError
@@ -16,6 +19,7 @@ class Rod(Constraint):
     def __init__(
         self, length: float, anchor1: Particle, anchor2: Particle, stiffness=1.0
     ) -> None:
+        self.constraint_type: str = "rod"
         self.anchor1: Particle = anchor1
         self.anchor2: Particle = anchor2
         self.length: float = length
@@ -67,6 +71,7 @@ class Spring(Constraint):
         spring_constant: float,
         damping_constant=0.0,
     ) -> None:
+        self.constraint_type: str = "spring"
         self.anchor1: Particle = anchor1
         self.anchor2: Particle = anchor2
         self.length: float = length

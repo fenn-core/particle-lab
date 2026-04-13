@@ -1,9 +1,10 @@
 import numpy as np
 from particle_lab.physics.particle import Particle
 from particle_lab.physics.constraint import Constraint
-from particle_lab.physics import physics as physics
+from particle_lab.physics import physics
 from particle_lab.physics.integrator import Integrator
-from time import time
+from particle_lab.core.frame import Frame
+from time import perf_counter
 
 
 class World:
@@ -20,22 +21,27 @@ class World:
         constraint_iterations=10,
     ) -> None:
         self.particles: list[Particle] = []
+        self.particle_id_counter = 0
         self.force_constraints: list[Constraint] = []
         self.pbd_constraints: list[Constraint] = []
         self.constraint_iterations: int = constraint_iterations
         self.integrator: Integrator = integrator
+        self.elapsed_time: float = 0
         self.dt: float = dt
         self.sim_time: float = sim_time
-        self.accumulator: float = 0.0
+        self.accumulator: float = 0
         self.FPS: int = FPS
         self.topology_changed: bool = True
         self.world_gravity: bool = world_gravity
         self.particle_gravity: bool = particle_gravity
         self.G: float = G
         self.eps: float = eps
+        self.frames: list[Frame] = []
 
     def add_particle(self, particle: Particle) -> None:
         self.particles.append(particle)
+        particle.particle_id = self.particle_id_counter
+        self.particle_id_counter += 1 
 
     def remove_particle(self, particle: Particle) -> None:
         self.particles.remove(particle)
@@ -102,29 +108,24 @@ class World:
             self.integrator.velocity_step(self.particles, dt)
 
     def sim_loop(self, render_engine) -> None:
-        dt: float = self.dt
-        FPS: int = self.FPS
-        sim_time: float = self.sim_time 
-        elapsed_time: float = 0
-        last_time: float = time()
-        frame_time: float = 0
-        dt_per_frame: float = 1/FPS
-        alpha = 0
+        next_frame_time: float = 0
+        dt_per_frame: float = 1 / self.FPS
+        last_time: float = perf_counter()
 
-        while elapsed_time < sim_time:
-            current_time: float = time()
+        while self.sim_time > self.elapsed_time:
+            current_time: float = perf_counter()
             real_dt: float = current_time - last_time
-            last_time = current_time
+            last_time = perf_counter()
             self.accumulator += real_dt
 
-            while self.accumulator >= dt:
-                self.step(dt)
-                self.accumulator -= dt 
-                alpha: float = self.accumulator / dt
-                elapsed_time += dt
-                frame_time += dt
+            while self.accumulator >= self.dt:
+                self.step(self.dt)
+                self.accumulator -= self.dt
+                self.elapsed_time += self.dt
+            
+            self.alpha = self.accumulator / self.dt
 
-            if frame_time >= dt_per_frame:
-                render_engine.render(self, alpha)
-                # logger.take_snapshot(world.particles)
-                frame_time -= dt_per_frame
+            if self.elapsed_time >= next_frame_time:
+                Frame(self.elapsed_time, self.particles)
+                render_engine.render(self, self.alpha)
+                next_frame_time += dt_per_frame
