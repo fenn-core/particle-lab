@@ -17,6 +17,6 @@ p1.velocity = np.array([35, 35], dtype="int64")
 
 world.add_particle(p1)
 
-renderer = sim.MatPlotLibRenderer(xlim=[-125, 125], ylim=[0, 75])
+renderer = sim.MatPlotLibRenderer(xlim=(-125, 125), ylim=(0, 75))
 
 world.sim_loop(renderer)
