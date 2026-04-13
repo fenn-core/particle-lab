@@ -1,13 +1,13 @@
 from typing import Literal
 
-import particle_lab.utils as utils 
+import particle_lab.utils as utils
 from particle_lab.physics import physics
 from particle_lab.physics.particle import Particle
 
 
 class Constraint:
     applies_force: bool
-    constraint_type: str 
+    constraint_type: str
     anchor1: Particle
     anchor2: Particle
 
@@ -44,12 +44,12 @@ class Rod(Constraint):
         w_sum: float | int = w1 + w2
         if w_sum == 0:
             return 0, 0, 0, 0
-        
+
         return (
             direction_x * error * (w1 / w_sum),
             direction_y * error * (w1 / w_sum),
-           -direction_x * error * (w2 / w_sum),
-           -direction_y * error * (w2 / w_sum),
+            -direction_x * error * (w2 / w_sum),
+            -direction_y * error * (w2 / w_sum),
         )
 
     def solve(self) -> None:

@@ -5,7 +5,7 @@ world = sim.World(
     dt=0.001,
     sim_time=20000,
     FPS=60,
-    world_gravity=True  ,
+    world_gravity=True,
     particle_gravity=False,
     # G=1,
     eps=0.0001,
@@ -27,6 +27,6 @@ world.add_constraint(c1)
 world.add_constraint(c2)
 world.add_constraint(c3)
 
-renderer = sim.MatPlotLibRenderer(xlim=(-10,10), ylim=(-10,10))
+renderer = sim.MatPlotLibRenderer(xlim=(-10, 10), ylim=(-10, 10))
 
 world.sim_loop(renderer)

@@ -42,8 +42,8 @@ class VerletIntegrator(Integrator):
                 continue
             acceleration: NDArray = particle.force / particle.mass
             if particle.previous_position is None:
-                particle.previous_position = (particle.position - particle.velocity * dt)
-                
+                particle.previous_position = particle.position - particle.velocity * dt
+
             temp: NDArray = particle.position.copy()
             particle.position = (
                 particle.position
@@ -66,9 +66,11 @@ class VelocityVerletIntegrator(Integrator):
             particle.previous_acceleration = acceleration.copy()
             particle.previous_position = particle.position.copy()
             particle.position = (
-                particle.position + particle.velocity * dt + 0.5 * acceleration * dt * dt
+                particle.position
+                + particle.velocity * dt
+                + 0.5 * acceleration * dt * dt
             )
-            
+
     def velocity_step(self, particles: list, dt: float) -> None:
         for particle in particles:
             if particle.mass == 0:
@@ -76,4 +78,7 @@ class VelocityVerletIntegrator(Integrator):
             if particle.previous_acceleration is None:
                 particle.previous_acceleration = zeros(2, dtype="float64")
             acceleration: NDArray = particle.force / particle.mass
-            particle.velocity = particle.velocity + 0.5 * (acceleration + particle.previous_acceleration) * dt
+            particle.velocity = (
+                particle.velocity
+                + 0.5 * (acceleration + particle.previous_acceleration) * dt
+            )

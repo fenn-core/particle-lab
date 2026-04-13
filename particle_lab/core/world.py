@@ -41,7 +41,7 @@ class World:
     def add_particle(self, particle: Particle) -> None:
         self.particles.append(particle)
         particle.particle_id = self.particle_id_counter
-        self.particle_id_counter += 1 
+        self.particle_id_counter += 1
 
     def remove_particle(self, particle: Particle) -> None:
         self.particles.remove(particle)
@@ -100,7 +100,7 @@ class World:
         if self.pbd_constraints:
             self.solve_pbd_constraints()
             self.recompute_velocity(dt)
-        elif not(self.integrator.computes_velocity):
+        elif not (self.integrator.computes_velocity):
             self.recompute_velocity(dt)
         if self.integrator.multi_step:
             self.reset_forces()
@@ -122,10 +122,17 @@ class World:
                 self.step(self.dt)
                 self.accumulator -= self.dt
                 self.elapsed_time += self.dt
-            
+
             self.alpha = self.accumulator / self.dt
 
             if self.elapsed_time >= next_frame_time:
-                Frame(self.elapsed_time, self.particles)
+                self.frames.append(
+                    Frame(
+                        self.elapsed_time,
+                        self.particles,
+                        self.force_constraints,
+                        self.pbd_constraints,
+                    )
+                )
                 render_engine.render(self, self.alpha)
                 next_frame_time += dt_per_frame
