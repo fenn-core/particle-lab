@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 from particle_lab.utils.utils import lerp
-import numpy as np
 from numpy.typing import NDArray
 
 
 class Renderer:
-    def render(self, world, alpha) -> None:
+    def render(self, previous_frame, current_frame, alpha) -> None:
         raise NotImplementedError
 
 
@@ -21,31 +20,42 @@ class MatPlotLibRenderer(Renderer):
         self.constraint_lines: list = []
         plt.ion()
 
-    def sync_world(self, world) -> None:
+    def sync_constraints(self, frame) -> None:
         for line in self.constraint_lines:
             line.remove()
-        self.all_constraints: list = world.pbd_constraints + world.force_constraints
         self.constraint_lines = [
-            self.ax.plot([], [])[0]
-            for _ in world.pbd_constraints + world.force_constraints
+            self.ax.plot([], [])[0] for _ in frame.constraint_relationships
         ]
 
-    def render(self, world, alpha) -> None:
-        if world.topology_changed:
-            self.sync_world(world)
-            world.topology_changed = False
+    def render(self, previous_frame, current_frame, alpha) -> None:
+        if len(self.constraint_lines) != len(current_frame.constraint_relationships):
+            self.sync_constraints(current_frame)
 
-        positions: NDArray = np.array(
-            [lerp(p.previous_position, p.position, alpha) for p in world.particles]
+        positions: NDArray = lerp(
+            previous_frame.particle_positions,
+            current_frame.particle_positions,
+            alpha,
         )
+
         self.particle_scatter.set_offsets(positions)
-        for line, constraint in zip(self.constraint_lines, self.all_constraints):
-            x1, y1 = lerp(
-                constraint.anchor1.previous_position, constraint.anchor1.position, alpha
+        for line, constraint_data in zip(
+            self.constraint_lines,
+            current_frame.constraint_relationships,
+        ):
+
+            p1_index: int = constraint_data[0]
+            p2_index: int = constraint_data[1]
+
+            x1, y1 = (
+                positions[p1_index][0],
+                positions[p1_index][1],
             )
-            x2, y2 = lerp(
-                constraint.anchor2.previous_position, constraint.anchor2.position, alpha
+
+            x2, y2 = (
+                positions[p2_index][0],
+                positions[p2_index][1],
             )
+
             line.set_data([x1, x2], [y1, y2])
         self.fig.canvas.draw_idle()
         self.fig.canvas.flush_events()
