@@ -1,5 +1,5 @@
-from .datalogger import DataLogger
+from .framelogger import FrameLogger
 
 __all__: list[str] = [
-    "DataLogger",
+    "FrameLogger",
 ]

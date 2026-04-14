@@ -8,7 +8,7 @@ from particle_lab.physics.integrator import (
 )
 from particle_lab.rendering.renderer import MatPlotLibRenderer
 from particle_lab.utils import utils
-from particle_lab.tools.datalogger import DataLogger
+from particle_lab.tools.framelogger import FrameLogger
 
 __all__: list[str] = [
     "World",
@@ -17,5 +17,5 @@ __all__: list[str] = [
     "Rod",
     "Spring",
     "utils",
-    "DataLogger",
+    "FrameLogger",
 ]

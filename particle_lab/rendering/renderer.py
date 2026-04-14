@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 from particle_lab.utils.utils import lerp
+from particle_lab.core.frame import Frame
 from numpy.typing import NDArray
 
 
 class Renderer:
-    def render(self, previous_frame, current_frame, alpha) -> None:
+    def render(self, previous_frame: Frame, current_frame: Frame, alpha: float) -> None:
         raise NotImplementedError
 
 
@@ -20,14 +21,14 @@ class MatPlotLibRenderer(Renderer):
         self.constraint_lines: list = []
         plt.ion()
 
-    def sync_constraints(self, frame) -> None:
+    def sync_constraints(self, frame: Frame) -> None:
         for line in self.constraint_lines:
             line.remove()
         self.constraint_lines = [
             self.ax.plot([], [])[0] for _ in frame.constraint_relationships
         ]
 
-    def render(self, previous_frame, current_frame, alpha) -> None:
+    def render(self, previous_frame: Frame, current_frame: Frame, alpha: float) -> None:
         if len(self.constraint_lines) != len(current_frame.constraint_relationships):
             self.sync_constraints(current_frame)
 

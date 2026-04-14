@@ -19,6 +19,8 @@ class World:
         G=6.67430e-11,
         eps=1e-5,
         constraint_iterations=10,
+        print_frame_data=False,
+        export_frames_to_csv=False,
     ) -> None:
         self.particles: list[Particle] = []
         self.particle_id_counter = 0
